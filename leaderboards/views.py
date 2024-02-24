@@ -16,7 +16,7 @@ def submit_score(request):
         form =  ConnectionsScoreForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect(leaderboard_view) #Redirect to leaderboard page, which has the '' url
+            return redirect('leaderboard') #Redirect to leaderboard page, which has the '' url
     else:
         form = ConnectionsScoreForm()
     
