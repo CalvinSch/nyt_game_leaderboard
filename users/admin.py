@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-#from .models import Flight, Airport, Passenger
+from .models import Profile, Friendship
 
 # #if i want more info on a flight, for example, add more fields 
 # class FlightAdmin(admin.ModelAdmin):
@@ -13,6 +13,7 @@ from django.contrib import admin
 #     #will show the flights a passenger is on in a better way 
 #     filter_horizontal = ("flights",)
 
-# admin.site.register(Airport)
+admin.site.register(Profile)
+admin.site.register(Friendship)
 # admin.site.register(Flight, FlightAdmin) #use the flightadmin settings when you view in teh interface 
 # admin.site.register(Passenger, PassengerAdmin)

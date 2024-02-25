@@ -1,0 +1,89 @@
+<head>
+    <!-- Other head elements -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+
+</head>
+
+<style>
+    .delete-form .btn[title]:hover:after {
+        content: attr(title);
+        position: absolute;
+        top: -5px;
+        right: 105%;
+        background: #000;
+        color: #fff;
+        padding: 5px 8px;
+        border-radius: 5px;
+        font-size: 12px;
+        z-index: 20;
+    }
+</style>
+
+{% extends "users/layout.html" %}
+
+{% block body %}
+
+<div class="container my-4">
+    {% if messages %}
+        <div id="message-container">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" onclick="closeAlert(this)">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <h1 class="display-4">{{ user.username }}, this is your profile</h1>
+
+    <a href="{% url 'users:list_users' %}" class="btn btn-primary my-3">Add New Users Here!</a>
+
+    <h2>Following List</h2>
+    <ul class="list-group">
+        {% for friend_profile in friends_profiles_following %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    Username: 
+                    <a href="{% url 'users:user_profile' username=friend_profile.user.username %}" class="btn btn-link">
+                        {{ friend_profile.user.username }}
+                    </a>
+                </div>
+                
+                <!-- Delete Relationship Form -->
+                <form action="{% url 'users:delete_relationship' friend_profile.user.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-danger" style="background: none; border: none; cursor: pointer; color: red;">
+                        <i class="fas fa-times"></i> <!-- Font Awesome X icon -->
+                    </button>
+                </form>
+            </li>
+        {% empty %}
+            <li class="list-group-item">No friends found.</li>
+        {% endfor %}
+    </ul>
+    
+
+    <h2 class="mt-4">Followers List</h2>
+    <ul class="list-group">
+        {% for friend_profile in friends_profiles_followers %}
+            <li class="list-group-item">
+                Username: 
+                <a href="{% url 'users:user_profile' username=friend_profile.user.username %}" class="btn btn-link">
+                    {{ friend_profile.user.username }}</a>
+
+            </li>
+        {% empty %}
+            <li class="list-group-item">No friends found.</li>
+        {% endfor %}
+    </ul>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+{% endblock %}
