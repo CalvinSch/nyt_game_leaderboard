@@ -1,3 +1,19 @@
+# SQLite database file
 db.sqlite3
-*.pyc
+
+# Byte-compiled / optimized / DLL files
 __pycache__/
+*.py[cod]
+
+# C extensions
+*.so
+
+# Django stuff:
+*.log
+.env
+.venv
+.idea
+.vscode
+
+# macOS specific
+.DS_Store
