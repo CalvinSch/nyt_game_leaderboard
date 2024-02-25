@@ -73,6 +73,29 @@ def user_profile_view(request, username):
             'friends_profiles_followers': friends_profiles_followers})
 
 
+# def add_friend_view(request, user_id):
+#     if request.method == "POST":
+#         if request.user.is_authenticated:
+#             user_to_add = get_object_or_404(User, pk=user_id)
+#             if request.user != user_to_add:
+#                 try:
+#                     # Attempt to create the friendship
+#                     Friendship.objects.create(from_user=request.user, to_user=user_to_add)
+        
+#                     #returning the user_profile url with an argument so it finds the right page 
+#                     return redirect(reverse('users:user_profile', kwargs={'username': request.user.username}))  # Redirect to an appropriate page
+#                     #'profile', username=user.username
+#                 except IntegrityError:
+#                     # Handle the case where the friendship already exists
+#                     return HttpResponse("Friendship already exists.")
+#             else:
+#                 return HttpResponse("You cannot add yourself as a friend.")
+#         else:
+#             return HttpResponse("You must be logged in to add friends.")
+#     else:
+#         return HttpResponse("Invalid request.")
+
+
 def add_friend_view(request, user_id):
     if request.method == "POST":
         if request.user.is_authenticated:
@@ -81,20 +104,38 @@ def add_friend_view(request, user_id):
                 try:
                     # Attempt to create the friendship
                     Friendship.objects.create(from_user=request.user, to_user=user_to_add)
-        
-                    #returning the user_profile url with an argument so it finds the right page 
-                    return redirect(reverse('users:user_profile', kwargs={'username': request.user.username}))  # Redirect to an appropriate page
-                    #'profile', username=user.username
+
+                    # Add a success message
+                    messages.success(request, "Friend successfully added!")
+
                 except IntegrityError:
                     # Handle the case where the friendship already exists
-                    return HttpResponse("Friendship already exists.")
+                    messages.error(request, "You are great friends with this person already!")
+                    return redirect(reverse('users:list_users'))
+
             else:
-                return HttpResponse("You cannot add yourself as a friend.")
+                messages.error(request, "You cannot add yourself as a friend, silly goose.")
+                return redirect(reverse('users:list_users'))
         else:
-            return HttpResponse("You must be logged in to add friends.")
+            messages.error(request, "You must be logged in to add friends.")
+            return redirect(reverse('users:list_users'))
     else:
-        return HttpResponse("Invalid request.")
+        messages.error(request, "Invalid request.")
+        return redirect(reverse('users:list_users'))
+
+    # Redirect back to the same page or another page of your choice
+    return redirect(reverse('users:user_profile', kwargs={'username': request.user.username}))  # Redirect to an appropriate page
+
 
 def list_users_view(request):
     users = User.objects.all()
     return render(request, 'users/list_users.html', {'users': users})
+
+
+def delete_relationship_view(request, friend_id):
+    if request.method == "POST":
+        # Assume the user initiating the request is the 'from_user'
+        relationship = get_object_or_404(Friendship, from_user=request.user, to_user_id=friend_id)
+        relationship.delete()
+        messages.success(request, "Friendship removed successfully.")
+    return redirect(reverse('users:user_profile', kwargs={'username': request.user.username})) 

@@ -23,7 +23,7 @@ class Profile(models.Model):
         # Assuming 'Friendship' is the name of the model representing the relationship
         # This will fetch all users where the current user is the 'from_user'
         friendships = Friendship.objects.filter(to_user=self.user)
-        friend_user_ids = friendships.values_list('to_user_id', flat=True)
+        friend_user_ids = friendships.values_list('from_user_id', flat=True)
         # Return profiles of these friends
         return Profile.objects.filter(user_id__in=friend_user_ids)
 
