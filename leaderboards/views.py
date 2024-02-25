@@ -11,7 +11,7 @@ def leaderboard_view(request):
 
 def submit_score(request):
     if request.method == "POST":
-        form =  ConnectionsScoreForm(request.POST)
+        form =  ConnectionsScoreForm(request.POST, player_name = request.user.username)
         if form.is_valid():
             form.save()
             return redirect('leaderboards:leaderboard') #Redirect to leaderboard page, which has the '' url
