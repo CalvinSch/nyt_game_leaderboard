@@ -1,0 +1,39 @@
+<head>
+    <!-- Other head elements -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+{% extends "users/layout.html" %}
+
+{% block body %}
+
+<div class="container mt-4">
+    {% if messages %}
+        <div id="message-container">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" onclick="closeAlert(this)">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    
+    <h2 class="mb-3">User List</h2>
+    <div class="list-group">
+        {% for user in users %}
+            <div class="list-group-item d-flex justify-content-between align-items-center">
+                {{ user.username }}
+                <form action="{% url 'users:add_friend' user.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary btn-sm">Add Friend</button>
+                </form>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}
