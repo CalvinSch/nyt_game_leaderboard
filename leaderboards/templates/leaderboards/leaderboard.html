@@ -32,7 +32,7 @@
                     <th scope="row">{{ forloop.counter }}</th>
                     <td>{{ score.player_name }}</td>
                     <td>{{ score.puzzle_number }}</td>
-                    <td>{{ score.score_details | linebreaksbr }}</td>
+                    <td style="min-width: 120px;">{{ score.score_details | linebreaksbr }}</td>
                     <td>{{ score.score_value }}</td>
                     <td>{{ score.date|date:"N j, Y P" }}</td>
                 </tr>

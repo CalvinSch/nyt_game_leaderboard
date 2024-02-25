@@ -4,7 +4,7 @@ from .models import ConnectionsScore
 
 # Create your views here.
 def leaderboard_view(request):
-    leaderboard_scores = ConnectionsScore.objects.order_by('score_value').reverse()
+    leaderboard_scores = ConnectionsScore.objects.order_by('puzzle_number', 'score_value').reverse()
 
     context = {'leaderboard_scores': leaderboard_scores}
     return render(request, 'leaderboards/leaderboard.html', context)
