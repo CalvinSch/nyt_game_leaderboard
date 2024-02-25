@@ -5,6 +5,8 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout #built in funcitons from django
 from .models import Profile, Friendship
 
+from django.contrib.auth.forms import UserCreationForm
+
 from django.db.models import Q
 
 from django.contrib.auth.models import User
@@ -37,6 +39,22 @@ def login_view(request):
     return render(request, "users/login.html")
     #return redirect(reverse("users:login"))
     #return HttpResponseRedirect(reverse("users:login"))
+
+def register_view(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+
+            # Log the user in (optional)
+            login(request, user)
+
+            # Redirect to the user's profile page
+            return redirect('users:user_profile', username=user.username)
+    else:
+        form = UserCreationForm()
+
+    return render(request, 'users/register.html', {'form': form})
 
 def logout_view(request):
     logout(request)

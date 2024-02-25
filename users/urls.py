@@ -1,7 +1,7 @@
 from django.urls import path 
 
 
-from users.views import index, login_view, logout_view, user_profile_view, add_friend_view, list_users_view, delete_relationship_view
+from users.views import index, login_view, logout_view, user_profile_view, add_friend_view, list_users_view, delete_relationship_view, register_view
 from leaderboards.views import leaderboard_view, submit_score
 from . import views
 
@@ -10,6 +10,7 @@ app_name = 'users'
 urlpatterns = [
     path("", index, name="index"),
     path("login", login_view, name='login'),
+    path('register', register_view, name='register'),
     path("logout", logout_view, name='logout'),
     #path('leaderboards/', leaderboard_view, name='leaderboard_view'),
     ##individual user profile page 
