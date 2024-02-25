@@ -3,6 +3,9 @@ from django.urls import reverse
 from django.http import HttpResponseRedirect
 
 from django.contrib.auth import authenticate, login, logout #built in funcitons from django
+from .models import Profile
+
+from django.contrib.auth.models import User
 
 ##skearns, seanpjk@gmail.com, bigredcat
 
@@ -37,3 +40,20 @@ def logout_view(request):
     return render(request, "users/login.html", {
         "message": "Logged out."
     })
+
+
+#user profile view, renders the profile html page 
+def user_profile_view(request, username):
+    user_profile = Profile.objects.get(user__username=username)
+    return render(request, 'users/profile.html', {'profile': user_profile})
+
+
+##making views for users to add friends by searching for them 
+def add_friend_view(request, user_id):
+    user_to_add = User.objects.get(pk=user_id)
+    Friendship.objects.create(from_user=request.user, to_user=user_to_add)
+    return HttpResponseRedirect('/wherever-you-want-to-redirect')
+
+def list_users_view(request):
+    users = User.objects.all()
+    return render(request, 'users/list_users.html', {'users': users})

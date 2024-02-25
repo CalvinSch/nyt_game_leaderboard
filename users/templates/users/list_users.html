@@ -1,0 +1,9 @@
+<!-- users/list_users.html -->
+<ul>
+    {% for user in users %}
+        <li>
+            {{ user.username }}
+            <a href="{% url 'add_friend' user.id %}">Add Friend</a>
+        </li>
+    {% endfor %}
+</ul>
