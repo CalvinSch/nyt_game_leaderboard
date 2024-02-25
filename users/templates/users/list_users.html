@@ -1,9 +1,20 @@
+{% extends "users/layout.html" %}
+
+{% block body %}
+
+
 <!-- users/list_users.html -->
 <ul>
     {% for user in users %}
         <li>
             {{ user.username }}
-            <a href="{% url 'add_friend' user.id %}">Add Friend</a>
+            <!-- <a href="{% url 'users:add_friend' user.id %}" method="post">Add Friend</a> -->
+            <form action="{% url 'users:add_friend' user.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit">Add Friend</button>
+            </form>
         </li>
     {% endfor %}
 </ul>
+
+{% endblock %}
