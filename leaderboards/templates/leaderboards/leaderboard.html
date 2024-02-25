@@ -21,11 +21,12 @@
         </thead>
         <tbody>
             {% for score in leaderboard_scores %}
+            <!-- if score.ayername in player.friends -->
                 <tr>
                     <th scope="row">{{ forloop.counter }}</th>
                     <td>{{ score.player_name }}</td>
                     <td>{{ score.game.name }}</td>
-                    <td>{{ score.score_details }}</td>
+                    <td>{{ score.score_details | linebreaksbr }}</td>
                     <td>{{ score.date|date:"Y-m-d H:i" }}</td>
                 </tr>
             {% endfor %}

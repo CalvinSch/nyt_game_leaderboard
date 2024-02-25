@@ -27,8 +27,10 @@ class ConnectionsScore(models.Model):
     🟨🟨🟨🟨
     🟦🟦🟦🟦
     """
+    raw_score_details = models.TextField()
 
-    game = models.ForeignKey(Game, on_delete = models.CASCADE)
+    #game = models.ForeignKey(Game, on_delete = models.CASCADE)
+    game = 'Test Game'
     player_name = models.CharField(max_length = 100)
     puzzle_number = models.IntegerField(null = True, blank = True)
     score_details = models.TextField()

@@ -5,8 +5,8 @@ class ConnectionsScoreForm(forms.ModelForm):
     class Meta:
         model = ConnectionsScore
         fields = [
-            'score_details'
+            'raw_score_details'
         ]
         widgets = {
-            'score_details': forms.Textarea(attrs={'class': 'form-control', 'rows': 3})
+            'raw_score_details': forms.Textarea(attrs={'class': 'form-control', 'rows': 3})
         }

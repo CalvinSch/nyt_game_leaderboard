@@ -10,7 +10,6 @@ def leaderboard_view(request):
     context = {'leaderboard_scores': leaderboard_scores}
     return render(request, 'leaderboards/leaderboard.html', context)
 
-
 def submit_score(request):
     if request.method == "POST":
         form =  ConnectionsScoreForm(request.POST)
