@@ -27,7 +27,13 @@
 <body>
     <div class="header">
         <!-- Update these href attributes to match your URL names -->
+        {% if user.username != '' %}
+        <!-- Check if user is registered. TODO: Check authentication? -->
         <a href="{% url 'users:user_profile' username=request.user.username %}">My Profile</a>
+        {% else %}
+        <!-- To prevent errors for non-registered users, redirect to the registration view -->
+        <a href="{% url 'users:login' %}">Log In</a>
+        {% endif %}
         <a href="{% url 'leaderboards:leaderboard' %}">Leaderboard</a>
         <a href="{% url 'leaderboards:submit' %}">Submit Score</a>
     </div>

@@ -7,13 +7,17 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
 <body>
+{% extends "users/layout.html" %}
+{% block body %}
 <div class="container mt-5">
     <h2>Submit Your Score</h2>
     <form method="post">
+        <!-- TODO: Add in sample, greyed out text into submission box to show sample score. Eventually input handling-->
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit" class="btn btn-primary">Submit Score</button>
     </form>
 </div>
+{% endblock %}
 </body>
 </html>

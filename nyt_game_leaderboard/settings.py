@@ -30,8 +30,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-u*kxcv5wqz=gt8(q&gw+%#itgi-sz@@g)x_clq-v8ng9s=&jl1'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-#DEBUG = False
+#DEBUG = True
+DEBUG = False
 
 ### Added https://stackoverflow.com/questions/74160169/get-http-1-1-500-145
 LOGGING = {
@@ -166,7 +166,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'UTC' #TODO: Find a way to get timezone for submissions based on user
 
 USE_I18N = True
 

@@ -65,6 +65,10 @@ def logout_view(request):
 
 #user profile view, renders the profile html page 
 def user_profile_view(request, username):
+    #Need immediate handler for no users, redirect to registration?
+    if username == '':
+        return redirect(reverse('users:register_view'))
+
     user_profile = get_object_or_404(Profile, user__username=username)
 
     user = get_object_or_404(User, username=username)

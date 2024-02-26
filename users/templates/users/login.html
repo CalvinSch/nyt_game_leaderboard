@@ -7,6 +7,8 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
+{% extends "users/layout.html" %}
+{% block body %}
     <div class="container h-100 d-flex justify-content-center align-items-center">
         <div class="card p-4" style="max-width: 400px; width: 100%;">
             <h2 class="card-title text-center">Login</h2>
@@ -24,5 +26,6 @@
             <a href="{% url 'users:register' %}" class="btn btn-link">Register</a>
         </div>
     </div>
+{% endblock %}
 </body>
 </html>
