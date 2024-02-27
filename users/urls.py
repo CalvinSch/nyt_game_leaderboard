@@ -1,7 +1,8 @@
 from django.urls import path 
 
 
-from users.views import index, login_view, logout_view, user_profile_view, add_friend_view, list_users_view, delete_relationship_view, register_view
+from users.views import (index, login_view, logout_view, user_profile_view, add_friend_view, list_users_view, delete_relationship_view, register_view,
+followers_list_view, following_list_view)
 from leaderboards.views import leaderboard_view, submit_score
 from . import views
 
@@ -16,6 +17,8 @@ urlpatterns = [
     ##individual user profile page 
     #path('users/<str:username>/', user_profile_view, name='user_profile'),
     path('<str:username>', user_profile_view, name='user_profile'),
+    path('following_list/<str:username>', following_list_view, name='following_list'),
+    path('followers_list/<str:username>', followers_list_view, name='followers_list'),
     #path to add as a friend
     path('add_friend/<int:user_id>/', add_friend_view, name='add_friend'),
     #path to list all users so that people can add them as friends 
