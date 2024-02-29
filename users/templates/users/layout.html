@@ -6,7 +6,7 @@
     <title>Users</title>
     <style>
         .header {
-            background-color: #f1f1f1;
+            background-color: #ffffff;
             padding: 10px;
             text-align: center;
         }
@@ -23,6 +23,9 @@
             color: black;
         }
     </style>
+    {% load static %}
+    <!-- With updated STATICFILE_DIRS, we can now reference static files like this. BE SURE TO python manage.py collectstatic -->
+    <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
 </head>
 <body>
     <div class="header">

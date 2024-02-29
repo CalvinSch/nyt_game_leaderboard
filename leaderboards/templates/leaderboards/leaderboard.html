@@ -12,8 +12,8 @@
 {% block body %}
 <div class="container mt-5">
     {% load static %}
-    <!-- Sometimes the image wasn't found. Toggling in and out of debug mode fixed this -->
-    <img src="/nyt_game_leaderboard/static/leaderboards/leaderboard_logo.png" alt="Leaderboard Logo" style="width: 35%;" class="mt-5">
+    <!-- This is working properly on local test, in a fresh browser with cache cleared -->
+    <img src="{% static "img/leaderboard_logo.png" %}" alt="Leaderboard Logo" style="width: 35%;" class="mt-5">
     <!-- <a href="submit_score">Submit Score</a> -->
     <table class="table">
         <thead>
@@ -41,6 +41,7 @@
         </tbody>
     </table>
 </div>
+{% include "shared/footer.html" %}
 {% endblock %}
 </body>
 </html>
