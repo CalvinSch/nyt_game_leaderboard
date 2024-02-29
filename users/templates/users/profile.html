@@ -1,28 +1,34 @@
-<head>
-    <!-- Other head elements -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+<!--
+    <head>
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
 
-</head>
+    </head>
 
-<style>
-    .delete-form .btn[title]:hover:after {
-        content: attr(title);
-        position: absolute;
-        top: -5px;
-        right: 105%;
-        background: #000;
-        color: #fff;
-        padding: 5px 8px;
-        border-radius: 5px;
-        font-size: 12px;
-        z-index: 20;
-    }
-</style>
+    <style>
+        .delete-form .btn[title]:hover:after {
+            content: attr(title);
+            position: absolute;
+            top: -5px;
+            right: 105%;
+            background: #000;
+            color: #fff;
+            padding: 5px 8px;
+            border-radius: 5px;
+            font-size: 12px;
+            z-index: 20;
+        }
+    </style>
 
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+-->
 
 {% extends "users/layout.html" %}
 
@@ -114,12 +120,13 @@
             <li class="list-group-item">No friends found.</li>
         {% endfor %}
     </ul>
+
+    {% block body %}
+    <!-- Content will go here -->
+    {% endblock %}
+
+
 </div>
-
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-
 
 {% endif %}
 

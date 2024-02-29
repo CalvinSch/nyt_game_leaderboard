@@ -1,0 +1,75 @@
+{% extends "users/profile.html" %}
+
+{% block body %}
+
+<div class="container my-4">
+    {% if messages %}
+        <div id="message-container">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" onclick="closeAlert(this)">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <h1 class="display-4">{{ user.username }}, this is your profile</h1>
+
+    <a href="{% url 'users:list_users' %}" class="btn btn-primary my-3">Add New Users Here!</a>
+
+    <h2>Following List</h2>
+    <ul class="list-group">
+        <!--Will change to allow users to delete their following if wanted -->
+        {% if user.username == request.user.username %} 
+
+        {% for friend_profile in friends_profiles_following %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    Username: 
+                    <a href="{% url 'users:user_profile' username=friend_profile.user.username %}" class="btn btn-link">
+                        {{ friend_profile.user.username }}
+                    </a>
+                </div>
+                
+                <!-- Delete Relationship Form -->
+                <form action="{% url 'users:delete_relationship' friend_profile.user.id %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-danger" style="background: none; border: none; cursor: pointer; color: red;">
+                        <i class="fas fa-times"></i> <!-- Font Awesome X icon -->
+                    </button>
+                </form>
+            </li>
+        {% empty %}
+            <li class="list-group-item">No friends found.</li>
+        {% endfor %}
+
+        <!--if the user who is logged in is on a different user page -->
+        {% else %}
+
+        <h2>Following List</h2>
+        <ul class="list-group">
+            {% for friend_profile in friends_profiles_following %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        Username: 
+                        <a href="{% url 'users:user_profile' username=friend_profile.user.username %}" class="btn btn-link">
+                            {{ friend_profile.user.username }}
+                        </a>
+                    </div>
+                </li>
+            {% empty %}
+                <li class="list-group-item">No friends found.</li>
+            {% endfor %}
+        </ul>
+
+        {% endif %}
+
+
+    </ul>
+    
+</div>
+
+{% endblock %}
