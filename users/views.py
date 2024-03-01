@@ -1,18 +1,21 @@
+##web handling
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout #built in funcitons from django
-from .models import Profile, Friendship
 
+##user creation and authentication 
+from django.contrib.auth import authenticate, login, logout #built in funcitons from django
 from django.contrib.auth.forms import UserCreationForm
 
-from django.db.models import Q
-
+##models 
+from .models import Profile, Friendship
 from django.contrib.auth.models import User
+from django.db.models import Q #querying models 
+
+#error handling 
 from django.db import IntegrityError
 
-##skearns, seanpjk@gmail.com, bigredcat
 
 # Create your views here.
 def index(request):
@@ -69,53 +72,19 @@ def user_profile_view(request, username):
     if username == '':
         return redirect(reverse('users:register_view'))
 
+    #obtain the instance of the profile and user based on the username on the page 
     user_profile = get_object_or_404(Profile, user__username=username)
-
     user = get_object_or_404(User, username=username)
 
-    # Get the list of friends' profiles
+    # Get the list of friends' profiles from the profile object method called get_friends_profiles_following/followers 
     friends_profiles_following = user_profile.get_friends_profiles_following()
     friends_profiles_followers = user_profile.get_friends_profiles_followers()
-
-    # # Fetch friendships where the user is either the 'from_user' or 'to_user'
-    # friendships = Friendship.objects.filter(Q(from_user=user) | Q(to_user=user))
-
-    # # Preparing a list of friends' profiles
-    # friends_profiles = []
-    # for friendship in friendships:
-    #     # Add the other user's profile to the list
-    #     friend_profile = friendship.to_user.profile if friendship.from_user == user else friendship.from_user.profile
-    #     friends_profiles.append(friend_profile)
-
 
     return render(request, 'users/profile.html', 
             {'profile': user_profile, 
             'user': user, 
             'friends_profiles_following': friends_profiles_following,
             'friends_profiles_followers': friends_profiles_followers})
-
-
-# def add_friend_view(request, user_id):
-#     if request.method == "POST":
-#         if request.user.is_authenticated:
-#             user_to_add = get_object_or_404(User, pk=user_id)
-#             if request.user != user_to_add:
-#                 try:
-#                     # Attempt to create the friendship
-#                     Friendship.objects.create(from_user=request.user, to_user=user_to_add)
-        
-#                     #returning the user_profile url with an argument so it finds the right page 
-#                     return redirect(reverse('users:user_profile', kwargs={'username': request.user.username}))  # Redirect to an appropriate page
-#                     #'profile', username=user.username
-#                 except IntegrityError:
-#                     # Handle the case where the friendship already exists
-#                     return HttpResponse("Friendship already exists.")
-#             else:
-#                 return HttpResponse("You cannot add yourself as a friend.")
-#         else:
-#             return HttpResponse("You must be logged in to add friends.")
-#     else:
-#         return HttpResponse("Invalid request.")
 
 
 def add_friend_view(request, user_id):
@@ -161,3 +130,42 @@ def delete_relationship_view(request, friend_id):
         relationship.delete()
         messages.success(request, "Friendship removed successfully.")
     return redirect(reverse('users:user_profile', kwargs={'username': request.user.username})) 
+
+
+##render the following list html page which is an extension of the profile page 
+def following_list_view(request, username):
+    user = get_object_or_404(User, username=username)
+    user_profile = get_object_or_404(Profile, user=user)
+    # Use existing method to get profiles of following users
+    friends_profiles_following = user_profile.get_friends_profiles_following()
+
+    return render(request, 'users/following_list.html', {
+        'user_profile': user_profile,
+        'friends_profiles': friends_profiles_following
+    })
+
+##render the followers list html page which is an extension of the profile page 
+def followers_list_view(request, username):
+    user = get_object_or_404(User, username=username)
+    user_profile = get_object_or_404(Profile, user=user)
+    # Use existing method to get profiles of follower users
+    friends_profiles_followers = user_profile.get_friends_profiles_followers()
+
+    return render(request, 'users/followers_list.html', {
+        'user_profile': user_profile,
+        'friends_profiles': friends_profiles_followers
+    })
+
+
+def badge_list_view(request, username):
+    # Assuming you have a User model and a Profile model associated with it
+    user = get_object_or_404(User, username=username)
+    user_profile = get_object_or_404(Profile, user=user)
+    
+    # Emojis representing badges (you can replace these with your actual badge data)
+    badges = ['🎖️', '🏅', '🎉']
+
+    return render(request, 'users/badges.html', {
+        'user_profile': user_profile,
+        'badges': badges
+    })

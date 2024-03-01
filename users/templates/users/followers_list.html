@@ -1,0 +1,37 @@
+{% extends "users/profile.html" %}
+
+{% block tab_content %}
+
+<div class="container my-4">
+    {% if messages %}
+        <div id="message-container">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" onclick="closeAlert(this)">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+
+    <h2 class="mt-4">Followers List</h2>
+    <ul class="list-group">
+        {% for friend_profile in friends_profiles_followers %}
+            <li class="list-group-item">
+                Username: 
+                <a href="{% url 'users:user_profile' username=friend_profile.user.username %}" class="btn btn-link">
+                    {{ friend_profile.user.username }}</a>
+
+            </li>
+        {% empty %}
+            <li class="list-group-item">No friends found.</li>
+        {% endfor %}
+    </ul>
+</div>
+
+
+
+{% endblock %}

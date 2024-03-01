@@ -5,10 +5,9 @@ from django.contrib.auth.models import User
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     # Additional fields like bio, profile picture, etc.
-    bio = ''
     
-    #many-to-many field to track many freinds 
-    #friends = models.ManyToManyField('self', blank=True)
+    bio = models.CharField(max_length=64, blank=True)  # Allows up to 64 characters, and is optional
+    #profile_picture = ImageField(upload_to='profile_pics/', blank=True, null=True)  # Path where profile pictures will be stored
 
     #gets all the names of friends in the realtionships 
     def get_friends_profiles_following(self):
