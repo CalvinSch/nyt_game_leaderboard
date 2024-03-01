@@ -1,0 +1,13 @@
+{% extends 'users/profile.html' %}
+
+{% block title %}Badges{% endblock %}
+
+{% block tab_content %}
+    <!-- Display badges -->
+    <h2>Badges</h2>
+    <ul>
+        {% for badge in badges %}
+            <li>{{ badge }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

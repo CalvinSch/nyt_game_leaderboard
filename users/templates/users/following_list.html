@@ -1,6 +1,6 @@
 {% extends "users/profile.html" %}
 
-{% block body %}
+{% block tab_content %}
 
 <div class="container my-4">
     {% if messages %}
@@ -15,10 +15,6 @@
             {% endfor %}
         </div>
     {% endif %}
-
-    <h1 class="display-4">{{ user.username }}, this is your profile</h1>
-
-    <a href="{% url 'users:list_users' %}" class="btn btn-primary my-3">Add New Users Here!</a>
 
     <h2>Following List</h2>
     <ul class="list-group">

@@ -155,3 +155,17 @@ def followers_list_view(request, username):
         'user_profile': user_profile,
         'friends_profiles': friends_profiles_followers
     })
+
+
+def badge_list_view(request, username):
+    # Assuming you have a User model and a Profile model associated with it
+    user = get_object_or_404(User, username=username)
+    user_profile = get_object_or_404(Profile, user=user)
+    
+    # Emojis representing badges (you can replace these with your actual badge data)
+    badges = ['🎖️', '🏅', '🎉']
+
+    return render(request, 'users/badges.html', {
+        'user_profile': user_profile,
+        'badges': badges
+    })
