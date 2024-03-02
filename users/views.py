@@ -80,11 +80,14 @@ def user_profile_view(request, username):
     friends_profiles_following = user_profile.get_friends_profiles_following()
     friends_profiles_followers = user_profile.get_friends_profiles_followers()
 
+    badges = user_profile.get_badges()
+
     return render(request, 'users/profile.html', 
             {'profile': user_profile, 
             'user': user, 
             'friends_profiles_following': friends_profiles_following,
-            'friends_profiles_followers': friends_profiles_followers})
+            'friends_profiles_followers': friends_profiles_followers,
+            'badges':badges})
 
 
 def add_friend_view(request, user_id):
@@ -138,11 +141,13 @@ def following_list_view(request, username):
     user_profile = get_object_or_404(Profile, user=user)
     # Use existing method to get profiles of following users
     friends_profiles_following = user_profile.get_friends_profiles_following()
+    friends_profiles_followers = user_profile.get_friends_profiles_followers()
 
-    return render(request, 'users/following_list.html', {
-        'user_profile': user_profile,
-        'friends_profiles': friends_profiles_following
-    })
+    return render(request, 'users/following_list.html',{
+            'profile': user_profile, 
+            'user': user, 
+            'friends_profiles_following': friends_profiles_following,
+            'friends_profiles_followers': friends_profiles_followers})
 
 ##render the followers list html page which is an extension of the profile page 
 def followers_list_view(request, username):
@@ -150,11 +155,13 @@ def followers_list_view(request, username):
     user_profile = get_object_or_404(Profile, user=user)
     # Use existing method to get profiles of follower users
     friends_profiles_followers = user_profile.get_friends_profiles_followers()
+    friends_profiles_following = user_profile.get_friends_profiles_following()
 
     return render(request, 'users/followers_list.html', {
-        'user_profile': user_profile,
-        'friends_profiles': friends_profiles_followers
-    })
+            'profile': user_profile, 
+            'user': user, 
+            'friends_profiles_following': friends_profiles_following,
+            'friends_profiles_followers': friends_profiles_followers})
 
 
 def badge_list_view(request, username):
@@ -163,9 +170,14 @@ def badge_list_view(request, username):
     user_profile = get_object_or_404(Profile, user=user)
     
     # Emojis representing badges (you can replace these with your actual badge data)
-    badges = ['🎖️', '🏅', '🎉']
+    badges = user_profile.get_badges() #['🎖️', '🏅', '🎉', 'More badges coming soon...']
+    # Use existing method to get profiles of follower users
+    friends_profiles_followers = user_profile.get_friends_profiles_followers()
+    friends_profiles_following = user_profile.get_friends_profiles_following()
 
     return render(request, 'users/badges.html', {
-        'user_profile': user_profile,
-        'badges': badges
-    })
+            'profile': user_profile, 
+            'user': user, 
+            'friends_profiles_following': friends_profiles_following,
+            'friends_profiles_followers': friends_profiles_followers,
+            'badges': badges})
