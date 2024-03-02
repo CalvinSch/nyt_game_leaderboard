@@ -9,6 +9,8 @@ class Profile(models.Model):
     bio = models.CharField(max_length=64, blank=True)  # Allows up to 64 characters, and is optional
     #profile_picture = ImageField(upload_to='profile_pics/', blank=True, null=True)  # Path where profile pictures will be stored
 
+    #badges = models.ManyToManyField(Badge, blank=True) --use this soon when badges are not static
+
     #gets all the names of friends in the realtionships 
     def get_friends_profiles_following(self):
         # Assuming 'Friendship' is the name of the model representing the relationship
@@ -26,6 +28,13 @@ class Profile(models.Model):
         # Return profiles of these friends
         return Profile.objects.filter(user_id__in=friend_user_ids)
 
+        # New method to get badges
+    def get_badges(self):
+        # Static list of badges
+        #return self.badges.all() --when badges are an object, you can use this 
+        badges = ['🎖️', '🏅', '🎉', 'More badges coming soon...']
+        return badges
+
 
     def __str__(self):
         return self.user.username
@@ -39,3 +48,12 @@ class Friendship(models.Model):
 
     class Meta:
         unique_together = ('from_user', 'to_user')
+
+
+#class for holding different badges that a user can obtain --- use this soon
+# class Badge(models.Model):
+#     title = models.CharField(max_length=100)
+#     icon = models.CharField(max_length=10)  # For storing emoji or icon representation
+
+#     def __str__(self):
+#         return self.title
