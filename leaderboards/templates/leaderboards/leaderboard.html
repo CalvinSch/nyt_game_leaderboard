@@ -1,12 +1,21 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Leaderboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+<div class ="container mt-3">
+</div>
 {% extends "users/layout.html" %}
 {% block body %}
-<div class="container mt-5">
+<div class="container mt-3">
     {% load static %}
     <!-- This is working properly on local test, in a fresh browser with cache cleared -->
-    <img src="{% static "img/leaderboard_logo.png" %}" alt="Leaderboard Logo" style="width: 35%;" class="mt-5">
+    <img src="{% static "img/leaderboard_logo.png" %}" alt="Leaderboard Logo" style="width: 40%;" class="img-fluid">
     <!-- <a href="submit_score">Submit Score</a> -->
-    <table class="table">
+    <table class="table mt-3">
         <thead>
             <tr>
                 <th scope="col">#</th>

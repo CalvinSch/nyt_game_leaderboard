@@ -17,6 +17,27 @@
         {{ form.as_p }}
         <button type="submit" class="btn btn-primary">Submit Score</button>
     </form>
+    <!-- Script to add -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var puzzleInput = document.getElementById('id_raw_score_details'); // Use the actual ID of your textarea.
+            
+            puzzleInput.addEventListener('focus', function() {
+                var initialContent = `Paste in Your Score!\nConnections\nPuzzle #\n🟪🟪🟪🟪\n🟦🟦🟦🟦\n🟨🟨🟨🟨\n🟩🟩🟩🟩`;
+                if (this.value === initialContent) {
+                    this.value = ''; //Reset value when focused
+                    this.style.color = 'black';
+                }
+            });
+        
+            puzzleInput.addEventListener('blur', function() {
+                if (this.value.trim() === '') {
+                    this.value = initialContent;
+                    this.style.color = 'grey';
+                }
+            });
+        });
+        </script>
 </div>
 {% endblock %}
 </body>
