@@ -19,26 +19,25 @@ class ConnectionsScoreForm(forms.ModelForm):
         })
 
     def clean_raw_score_details(self):
-        #Use Regex to validate raw score
-        data = self.cleaned_data['raw_score_details'] #Built into django to store cleaned data from a form
+        data = self.cleaned_data['raw_score_details']
 
-        #Check Puzzle Number
+        # Check Puzzle Number
         puzzle_number_match = re.search(r'Puzzle #(\d+)', data)
         if not puzzle_number_match:
             raise forms.ValidationError('Invalid Puzzle Number. Support for ConnectionsPlus Custom Puzzles coming soon')
 
-        puzzle_number = int(puzzle_number_match.group(1))
-        # Additional puzzle number validation can be added here
+        # Isolate the squares using the match's end position as the starting point
+        square_data = data[puzzle_number_match.end():].strip() # 
+        print("Debugging square_data:", repr(square_data))  # Continue to use repr() for visibility
 
-        # Validate the puzzle layout format
-        layout_data = data.split('Puzzle #')[1].strip()  # Adjust based on the actual input format
-        if not re.match(r'^(\n[\u0000-\uFFFF]+\n)+$', layout_data):  # Adjust regex based on actual encoding
-            raise forms.ValidationError('Invalid puzzle layout format.')
-
-        # Further validations can be added here (e.g., row count, color codes)
+        # Regex validation: accepts, \r \n and the square unicode characters
+        #valid_square_regex = r'^\n*([\🟪\🟨\🟩\🟦]{4}(\r?\n)){1,7}$' #More strict pattern
+        valid_square_regex = r'^[\r\n]*([\U0001F7EA\U0001F7E6\U0001F7E8\U0001F7E9\r\n]+)$'
+        if not re.match(valid_square_regex, square_data):
+            raise forms.ValidationError('Invalid puzzle format.')
 
         return data
-        
+
 
     def save(self, commit=True):
         instance = super().save(commit=False)

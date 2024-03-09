@@ -45,7 +45,8 @@
         <ul class="errors-list">
             {% for field, errors in form.errors.items %}
                 {% for error in errors %}
-                <li><strong>Silly goose, be sure to paste in your score exactly!</strong></li>
+                <!-- <li>{{ error }}<strong>Silly goose, be sure to paste in your score exactly!</strong></li> : ENABLE THIS IS YOU WANT USERS TO SEE ERROR NAMES-->
+                <li>Silly goose, be sure to <strong>paste in your score exactly!</strong></li>
                 {% endfor %}
             {% endfor %}
         </ul>
