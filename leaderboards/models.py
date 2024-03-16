@@ -1,6 +1,6 @@
 from django.db import models
 from django.conf import settings
-from users.models import Profile
+from users.models import Profile, User
 
 # Create your models here.
 
