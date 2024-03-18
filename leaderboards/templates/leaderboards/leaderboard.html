@@ -13,7 +13,7 @@
 <div class="container mt-3">
     {% load static %}
     <!-- This is working properly on local test, in a fresh browser with cache cleared -->
-    <div>
+    <div style="position: sticky; top: 42px; overflow-y: scroll; background-color: white; z-index: 10;">
         <!-- <img src="{% static "img/leaderboard_logo.png" %}" alt="Leaderboard Logo" style="width: 40%;" class="img-fluid"> -->
         <div class="d-flex justify-content-between align-items-center" style="margin-bottom: 20px; background-color: white;">
             <img src="{% static 'img/leaderboard_logo.png' %}" alt="Leaderboard Logo" style="width: 40%;" class="img-fluid">
@@ -35,7 +35,7 @@
               
     </div>
     <!-- change the height to determine how long we can scroll for before containing the leaderboard -->
-    <div style="overflow-y: scroll; height: 1000px;">
+    <div style="overflow-y: scroll; height: 1000px; z-index: 1;">
     <table class="table mt-3">
         <thead style="top: -1px; position: sticky; background-color: white;">
             <tr>
