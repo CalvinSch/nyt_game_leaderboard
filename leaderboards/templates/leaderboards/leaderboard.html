@@ -13,16 +13,37 @@
 <div class="container mt-3">
     {% load static %}
     <!-- This is working properly on local test, in a fresh browser with cache cleared -->
-    <img src="{% static "img/leaderboard_logo.png" %}" alt="Leaderboard Logo" style="width: 40%;" class="img-fluid">
-    <!-- <a href="submit_score">Submit Score</a> -->
+    <div style="position: sticky; top: 42px; overflow-y: scroll; background-color: white; z-index: 10;">
+        <!-- <img src="{% static "img/leaderboard_logo.png" %}" alt="Leaderboard Logo" style="width: 40%;" class="img-fluid"> -->
+        <div class="d-flex justify-content-between align-items-center" style="margin-bottom: 20px; background-color: white;">
+            <img src="{% static 'img/leaderboard_logo.png' %}" alt="Leaderboard Logo" style="width: 40%;" class="img-fluid">
+            <button id="emojiToggle" class="btn btn-outline-secondary" onclick="toggleEmoji()">
+                <span id="emoji">🌐 Global</span>
+            </button>
+        </div>
+    
+        <script>
+            function toggleEmoji() {
+                var emoji = document.getElementById("emoji");
+                if (emoji.textContent === "🌐 Global") {
+                    emoji.textContent = "👥 Following"; // Change to group emoji
+                } else {
+                    emoji.textContent = "🌐 Global"; // Change back to globe emoji
+                }
+            }
+        </script>
+              
+    </div>
+    <!-- change the height to determine how long we can scroll for before containing the leaderboard -->
+    <div style="overflow-y: scroll; height: 730px; z-index: 1;">
     <table class="table mt-3">
-        <thead>
+        <thead style="top: -1px; position: sticky; background-color: white;">
             <tr>
                 <th scope="col">#</th>
-                <th scope="col">Name</th>
-                <th scope="col">Puzzle #</th>
-                <th scope="col">Guesses</th>
-                <th scopre="col">Rating</th>
+                <th scope="col" style="padding-right: 0.1rem">Name</th>
+                <th scope="col">Rating</th>
+                <th scope="col" style="padding-right: 0.2rem">Guesses</th>
+                <th scope="col">Puzzle</th>
                 <th scope="col">Date</th>
             </tr>
         </thead>
@@ -30,20 +51,21 @@
             {% for score in leaderboard_scores %}
             <!-- if score.ayername in player.friends -->
                 <tr>
-                    <th scope="row">{{ forloop.counter }}</th>
+                    <th scope="row" style="padding-right: 0rem">{{ forloop.counter }}</th>
                     {% if score.player_name != '' %}
-                    <td>{{ score.player_name }}</td>
+                    <td style="max-width: 90px;"><div style="overflow: scroll; width: 100%">{{ score.player_name }}</div></td>
                     {% else %}
                     <td>Guest</td>
                     {% endif %}
+                    <td>{{ score.score_value }}</td> 
+                    <td style="min-width: 120px; max-width: 140px;">{{ score.score_details | linebreaksbr }}</td>
                     <td>{{ score.puzzle_number }}</td>
-                    <td style="min-width: 120px;">{{ score.score_details | linebreaksbr }}</td>
-                    <td>{{ score.score_value }}</td>
                     <td>{{ score.date|date:"N j, Y P" }}</td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
+    </div>
 </div>
 {% include "shared/footer.html" %}
 {% endblock %}

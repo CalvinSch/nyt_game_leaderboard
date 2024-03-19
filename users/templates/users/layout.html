@@ -14,7 +14,7 @@
             margin: 0 10px;
             text-decoration: none;
             padding: 8px 16px;
-            background-color: #333;
+            background-color: #000000;
             color: white;
             border-radius: 5px;
         }
@@ -29,14 +29,32 @@
         #user::after{
             content:"My Profile"
         }
-        @media (max-width: 400px) {
+        #login::after{
+            content:"Log In"
+        }
+        @media (max-width: 430px) {
             #submit::after{
                 content:"Submit"
             }
             #user::after{
                 content:"Profile"
             }
+            #login::after{
+                content:"Log In"
+            }
         }
+        @media (max-width: 330px) {
+            #submit::after{
+                content:"s"
+            }
+            #user::after{
+                content:"👤"
+            }
+            #login::after{
+                content:"🔑"
+            }
+        }
+
     </style>
     {% load static %}
     <!-- With updated STATICFILE_DIRS, we can now reference static files like this. BE SURE TO python manage.py collectstatic -->
@@ -61,17 +79,17 @@
 
 </head>
 <body>
-    <div class="header" style="border-spacing: 0cap;">
+    <div class="header" style="border-spacing: 0cap; top: 0; align-items: center; position: sticky; z-index: 10;">
         <!-- Update these href attributes to match your URL names -->
         {% if user.username != '' %}
         <!-- Check if user is registered. TODO: Check authentication? -->
-        <a href="{% url 'users:user_profile' username=request.user.username %}" id="user"></a>
+        <a href="{% url 'users:user_profile' username=request.user.username %}" id="user"><!-- Text Filled with @media --></a>
         {% else %}
         <!-- To prevent errors for non-registered users, redirect to the registration view -->
-        <a href="{% url 'users:login' %}">Log In</a>
+        <a href="{% url 'users:login' %}" id="login"><!-- Text Filled with @media --></a>
         {% endif %}
         <a href="{% url 'leaderboards:leaderboard' %}">Leaderboard</a>
-        <a href="{% url 'leaderboards:submit' %}" id="submit"></a>
+        <a href="{% url 'leaderboards:submit' %}" id="submit"><!-- Text Filled with @media --></a>
     </div>
 
     {% block body %}

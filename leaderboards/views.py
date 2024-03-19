@@ -1,10 +1,15 @@
 from django.shortcuts import render, redirect
 from .forms import ConnectionsScoreForm
 from .models import ConnectionsScore
+from users.models import Profile
+from users.views import user_profile_view
 
 # Create your views here.
 def leaderboard_view(request):
     leaderboard_scores = ConnectionsScore.objects.order_by('puzzle_number', 'score_value').reverse()
+
+    #following_ids =
+    #following_scores = request.user.friend_user_ids
 
     context = {'leaderboard_scores': leaderboard_scores}
     return render(request, 'leaderboards/leaderboard.html', context)

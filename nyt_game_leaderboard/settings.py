@@ -197,7 +197,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC' #TODO: Find a way to get timezone for submissions based on user
+TIME_ZONE = 'America/Chicago' #TODO: Find a way to get timezone for submissions based on user
 
 USE_I18N = True
 
