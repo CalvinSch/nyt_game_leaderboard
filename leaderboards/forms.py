@@ -1,5 +1,6 @@
 from django import forms
 from .models import Game, ConnectionsScore
+import re
 
 class ConnectionsScoreForm(forms.ModelForm):
     #Need to take player_name as an argument to the form, dynamically retrieved from POST request
@@ -17,7 +18,27 @@ class ConnectionsScoreForm(forms.ModelForm):
             'style': 'color: grey;',  # Style for the initial content
         })
 
-    
+    def clean_raw_score_details(self):
+        data = self.cleaned_data['raw_score_details']
+
+        # Check Puzzle Number
+        puzzle_number_match = re.search(r'Puzzle #(\d+)', data)
+        if not puzzle_number_match:
+            raise forms.ValidationError('Invalid Puzzle Number. Support for ConnectionsPlus Custom Puzzles coming soon')
+
+        # Isolate the squares using the match's end position as the starting point
+        square_data = data[puzzle_number_match.end():].strip() # 
+        print("Debugging square_data:", repr(square_data))  # Continue to use repr() for visibility
+
+        # Regex validation: accepts, \r \n and the square unicode characters
+        #valid_square_regex = r'^\n*([\🟪\🟨\🟩\🟦]{4}(\r?\n)){1,7}$' #More strict pattern
+        valid_square_regex = r'^[\r\n]*([\U0001F7EA\U0001F7E6\U0001F7E8\U0001F7E9\r\n]+)$'
+        if not re.match(valid_square_regex, square_data):
+            raise forms.ValidationError('Invalid puzzle format.')
+
+        return data
+
+
     def save(self, commit=True):
         instance = super().save(commit=False)
         instance.player_name = self.player_name  # Set the CharField to the username

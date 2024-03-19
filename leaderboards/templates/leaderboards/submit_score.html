@@ -3,21 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <title>Submit Score</title>
+    <style>
+        .errors-box {
+            position: center; /* Or absolute, depending on layout */
+            background-color: #fff; /* Light background */
+            color: darkred; /* Darker red text */
+            padding: 10px;
+            border: 1px solid darkred; /* Border color */
+            border-radius: 5px; /* Rounded corners */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Adds some shadow */
+            z-index: 1000; /* Ensures it's above other content */
+            max-width: 300px; /* Limits the box size */
+        }
+
+        .errors-list {
+            margin: 0;
+            padding: 0;
+            list-style-type: none;
+        }
+        .close-btn {
+            float: right;
+            font-size: 20px;
+            line-height: 20px;
+            cursor: pointer;
+        }
+
+    </style>
     <!-- Optional: Include Bootstrap or your preferred CSS framework for styling -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
 <body>
+<div class ="container mt-3"></div> <!-- Empty Div Here to match spacing of leaderboard page-->
 {% extends "users/layout.html" %}
 {% block body %}
-<div class="container mt-5">
+<div class="container mt-3">
     <h2>Submit Your Score</h2>
+
+    {% if form.errors %}
+    <div id="formErrorsBox" class="errors-box">
+        <span class="close-btn" onclick="document.getElementById('formErrorsBox').style.display='none';">&times;</span>
+        <ul class="errors-list">
+            {% for field, errors in form.errors.items %}
+                {% for error in errors %}
+                <!-- <li>{{ error }}<strong>Silly goose, be sure to paste in your score exactly!</strong></li> : ENABLE THIS IS YOU WANT USERS TO SEE ERROR NAMES-->
+                <li>Silly goose, be sure to <strong>paste in your score exactly!</strong></li>
+                {% endfor %}
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
     <form method="post">
         <!-- TODO: Add in sample, greyed out text into submission box to show sample score. Eventually input handling-->
         {% csrf_token %}
-        {{ form.as_p }}
+        {% for field in form %}
+        <div class="form-group">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }} <!-- Renders the form field -->
+            <!-- Manual rendering of errors is removed -->
+        </div>
+        {% endfor %}
         <button type="submit" class="btn btn-primary">Submit Score</button>
     </form>
-    <!-- Script to add -->
+
+    <!-- Script to add sample text -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var puzzleInput = document.getElementById('id_raw_score_details'); // Use the actual ID of your textarea.
@@ -37,7 +86,7 @@
                 }
             });
         });
-        </script>
+    </script>
 </div>
 {% endblock %}
 </body>
