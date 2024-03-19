@@ -90,7 +90,13 @@ LOGGING = {
 ALLOWED_HOSTS = ['*'] #TODO: CHANGE FOR SECURITY ON DEPLOY
 
 
-#CSRF_TRUSTED_ORIGINS = ['https://localhost:8000']
+CSRF_TRUSTED_ORIGINS = ['https://localhost:8000']
+
+##From Django-Google login tutorial 
+SITE_ID=3 #THIS FUCKING WORKED!?
+
+#so hopefully the intermediary page doesnt show up 
+SOCIALACCOUNT_LOGIN_ON_GET=True
 
 
 # Application definition
@@ -103,8 +109,25 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'leaderboards',
-    'users'
+    'users',
+
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google'
 ]
+
+#based on scopes from Google cloud console
+SOCIALACCOUNT_PROVIDERS = {
+    "google":{
+        "SCOPE": [
+            "profile",
+            "email"
+        ],
+        "AUTH_PARAMS":{"access_type":"online"}
+    }
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -114,6 +137,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    ##added this and used pip install python -m pip install django-allauth
+    'allauth.account.middleware.AccountMiddleware'
 ]
 
 ROOT_URLCONF = 'nyt_game_leaderboard.urls'
@@ -188,3 +213,16 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+
+#specifying standard django backend and all auth backends
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend"
+]
+
+LOGIN_REDIRECT_URL = "/"
+
+
+LOGOUT_REDIRECT_URL = '/'
