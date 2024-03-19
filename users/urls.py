@@ -2,9 +2,15 @@ from django.urls import path
 
 
 from users.views import (index, login_view, logout_view, user_profile_view, add_friend_view, list_users_view, delete_relationship_view, register_view,
-followers_list_view, following_list_view, badge_list_view)
+followers_list_view, following_list_view, badge_list_view, set_username_view)
 from leaderboards.views import leaderboard_view, submit_score
 from . import views
+
+# #url patterns from google SSO tutorial 
+# urlpatterns = [
+#     path("", views.home),
+#     path("logout", views.logout_view)
+# ]
 
 
 app_name = 'users'
@@ -13,9 +19,9 @@ urlpatterns = [
     path("login", login_view, name='login'),
     path('register', register_view, name='register'),
     path("logout", logout_view, name='logout'),
+    path("set_username", set_username_view, name="set_username"),
     #path('leaderboards/', leaderboard_view, name='leaderboard_view'),
     ##individual user profile page 
-    #path('users/<str:username>/', user_profile_view, name='user_profile'),
     path('<str:username>', user_profile_view, name='user_profile'),
     path('badges/<str:username>', badge_list_view, name='badge_list'),
     path('following_list/<str:username>', following_list_view, name='following_list'),
