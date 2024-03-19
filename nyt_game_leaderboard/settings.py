@@ -93,7 +93,7 @@ ALLOWED_HOSTS = ['*'] #TODO: CHANGE FOR SECURITY ON DEPLOY
 CSRF_TRUSTED_ORIGINS = ['https://localhost:8000']
 
 ##From Django-Google login tutorial 
-SITE_ID=2
+SITE_ID=3 #THIS FUCKING WORKED!?
 
 #so hopefully the intermediary page doesnt show up 
 SOCIALACCOUNT_LOGIN_ON_GET=True

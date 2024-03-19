@@ -1,4 +1,5 @@
 from django.urls import path 
+from django.urls import include, path
 
 
 from users.views import (index, login_view, logout_view, user_profile_view, add_friend_view, list_users_view, delete_relationship_view, register_view,
@@ -30,5 +31,7 @@ urlpatterns = [
     path('add_friend/<int:user_id>/', add_friend_view, name='add_friend'),
     #path to list all users so that people can add them as friends 
     path('list_users/', list_users_view, name='list_users'),
-    path('delete_relationship/<int:friend_id>/', delete_relationship_view, name='delete_relationship')
+    path('delete_relationship/<int:friend_id>/', delete_relationship_view, name='delete_relationship'),
+    path('accounts/', include('allauth.urls')),
+    path('accounts/', include('allauth.socialaccount.urls'))
 ]
