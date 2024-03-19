@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Set Username</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <form method="post">
+        {% csrf_token %}
+        <label for="username">Choose a username:</label>
+        <input type="text" id="username" name="username" required>
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>
