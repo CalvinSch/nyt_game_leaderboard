@@ -1,0 +1,38 @@
+{% extends "leaderboards/leaderboard.html" %}
+
+{% block leaderboard %}
+
+<!-- change the height to determine how long we can scroll for before containing the leaderboard -->
+<div style="overflow-y: scroll; height: 730px; z-index: 1;">
+<table class="table mt-3">
+    <thead style="top: -1px; position: sticky; background-color: white;">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col" style="padding-right: 0.1rem">Name</th>
+            <th scope="col">Rating</th>
+            <th scope="col" style="padding-right: 0.2rem">Guesses</th>
+            <th scope="col">Puzzle</th>
+            <th scope="col">Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for score in leaderboard_scores %}
+            <tr>
+                <th scope="row" style="padding-right: 0rem">{{ forloop.counter }}</th>
+                {% if score.player_name != '' %}
+                <td style="max-width: 90px;"><div style="overflow: scroll; width: 100%">{{ score.player_name }}</div></td>
+                {% else %}
+                <td>Guest</td>
+                {% endif %}
+                <td>{{ score.score_value }}</td> 
+                <td style="min-width: 120px; max-width: 140px;">{{ score.score_details | linebreaksbr }}</td>
+                <td>{{ score.puzzle_number }}</td>
+                <td>{{ score.date|date:"N j, Y P" }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+
+
+{% endblock %}
