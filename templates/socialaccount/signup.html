@@ -1,0 +1,34 @@
+{% extends "users/layout.html" %}
+{% block body %}
+<style>
+    /* Custom style for the signup button */
+    .btn-custom-success {
+        background-color: #28a745; /* Bootstrap success color */
+        border-color: #28a745; /* Consistent border color */
+        color: white; /* Text color */
+        font-size: 16px; /* Larger font size */
+        padding: 10px 25px; /* Larger padding for a bigger button */
+        border-radius: 25px; /* Rounded corners */
+        transition: background-color 0.2s, border-color 0.2s; /* Smooth transition for hover effect */
+    }
+
+    .btn-custom-success:hover,
+    .btn-custom-success:focus {
+        background-color: #218838; /* Darker shade on hover/focus */
+        border-color: #1e7e34; /* Darker border on hover/focus */
+    }
+</style>
+<div class="container h-100 d-flex justify-content-center align-items-center">
+    <div class="card p-4" style="max-width: 400px; width: 100%;">
+        <h2 class="card-title text-center">Signup</h2>
+        <form method="post" class="d-flex flex-column">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-custom-success mt-3">Signup</button>
+        </form>
+        <div class="mt-2 text-center">
+            <a href="{% url 'users:login' %}" class="btn btn-link">Already have an account? Login</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
