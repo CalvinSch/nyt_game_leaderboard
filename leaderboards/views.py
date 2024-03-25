@@ -3,6 +3,8 @@ from .forms import ConnectionsScoreForm
 from .models import ConnectionsScore
 from users.models import Profile, User
 from users.views import user_profile_view
+from django.contrib import messages
+from django.urls import reverse
 
 # Create your views here.
 def leaderboard_view(request):
