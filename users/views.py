@@ -16,6 +16,14 @@ from django.db.models import Q #querying models
 #error handling 
 from django.db import IntegrityError
 
+#views examples from Google SSO tutorial 
+# def home(request):
+#     return render(request, "home.html")
+
+# def logout_view(request):
+#     logout(request)
+#     return redirect("/")
+
 
 # Create your views here.
 def index(request):
@@ -58,6 +66,18 @@ def register_view(request):
         form = UserCreationForm()
 
     return render(request, 'users/register.html', {'form': form})
+
+
+##this view will be used after a user authenitcates with google so that they can still make a username 
+def set_username_view(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        if username:
+            request.user.username = username
+            request.user.save()
+            del request.session['user_needs_username']
+            return redirect(reverse('users:list_users'))  # Redirect to desired URL after setting username
+    return render(request, 'set_username.html')
 
 def logout_view(request):
     logout(request)
