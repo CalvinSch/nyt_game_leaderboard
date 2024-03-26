@@ -18,16 +18,14 @@
     </thead>
     <tbody>
         {% for score in leaderboard_scores %}
-            {% if score.player_name in friends_profiles_following %}
-                <tr>
-                    <th scope="row" style="padding-right: 0rem">{{ forloop.counter }}</th>
-                    <td style="max-width: 90px;"><div style="overflow: scroll; width: 100%">{{ score.player_name }}</div></td>
-                    <td>{{ score.score_value }}</td> 
-                    <td style="min-width: 120px; max-width: 140px;">{{ score.score_details | linebreaksbr }}</td>
-                    <td>{{ score.puzzle_number }}</td>
-                    <td>{{ score.date|date:"N j, Y P" }}</td>
-                </tr>
-            {% endif %}
+            <tr>
+                <th scope="row" style="padding-right: 0rem">{{ forloop.counter }}</th>
+                <td style="max-width: 90px;"><div style="overflow: scroll; width: 100%">{{ score.player_name }}</div></td>
+                <td>{{ score.score_value }}</td> 
+                <td style="min-width: 120px; max-width: 140px;">{{ score.score_details | linebreaksbr }}</td>
+                <td>{{ score.puzzle_number }}</td>
+                <td>{{ score.date|date:"N j, Y P" }}</td>
+            </tr>
         {% endfor %}
     </tbody>
 </table>
