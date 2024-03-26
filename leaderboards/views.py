@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, reverse
 from .forms import ConnectionsScoreForm
 from .models import ConnectionsScore
 from users.models import Profile, User
@@ -6,12 +6,12 @@ from users.views import user_profile_view
 from django.contrib import messages
 from django.urls import reverse
 
+from django.contrib import messages
+
 # Create your views here.
 def leaderboard_view(request):
     leaderboard_scores = ConnectionsScore.objects.order_by('puzzle_number', 'score_value').reverse()
 
-    #following_ids =
-    #following_scores = request.user.friend_user_ids
 
     context = {'leaderboard_scores': leaderboard_scores}
     return render(request, 'leaderboards/global_leaderboard.html', context)
@@ -30,16 +30,21 @@ def submit_score(request):
     
 # Create your views here.
 def leaderboard_view_following(request, username):
-    leaderboard_scores = ConnectionsScore.objects.order_by('puzzle_number', 'score_value').reverse()
 
+    print('Switching view')
     #if user is not authenticated, return to leaderboard view with a message saying you must be logged in 
     if not request.user.is_authenticated:
         messages.error(request, "You must be logged in to see following leaderboard.")
-        return redirect(reverse('leaderboards:leaderboard_view'))
-    if username == 'PLACEHOLDER':
+        print('Not Authenticated')
+        return redirect(reverse('leaderboards:leaderboard'))
+    if request.user.username == 'PLACEHOLDER':
         messages.error(request, "You must be logged in to see following leaderboard.")
-        return redirect(reverse('leaderboards:leaderboard_view'))
+        print('Placeholder name')
+        return redirect(reverse('leaderboards:leaderboard'))
 
+    #gets all leaderboard scores 
+    leaderboard_scores = ConnectionsScore.objects.order_by('puzzle_number', 'score_value').reverse()
+    
     #obtain the instance of the profile and user based on the username on the page 
     user_profile = get_object_or_404(Profile, user__username=username)
     user = get_object_or_404(User, username=username)
@@ -51,17 +56,17 @@ def leaderboard_view_following(request, username):
         friends_users_following.append(friend_profile.user.username)
     
     
-    print(f'users_following: {friends_users_following}')
+    print(f'users_following: {friends_users_following}')#['skearns', 'test123', 'test124']
 
-    needed_users = []
+    #added this code to return filtered scores 
+    #this fixes the re-indexing issue of new scores 
+    filtered_leaderboard_scores = []
     for score in leaderboard_scores:
-        needed_users.append(score.player_name)
+        if score.player_name in friends_users_following:
+            filtered_leaderboard_scores.append(score)
 
-    print(needed_users)
 
-
-    context = {'leaderboard_scores': leaderboard_scores,
-                'needed_users':needed_users,
+    context = {'leaderboard_scores': filtered_leaderboard_scores,
                 'user': user, 
                 'friends_profiles_following': friends_users_following}
     return render(request, 'leaderboards/following_leaderboard.html', context)
