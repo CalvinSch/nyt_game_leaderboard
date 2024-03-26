@@ -62,7 +62,8 @@ def leaderboard_view_following(request, username):
     #this fixes the re-indexing issue of new scores 
     filtered_leaderboard_scores = []
     for score in leaderboard_scores:
-        if score.player_name in friends_users_following:
+        ##include scores of following players as well as their own score 
+        if (score.player_name in friends_users_following or score.player_name == request.user.username): 
             filtered_leaderboard_scores.append(score)
 
 
