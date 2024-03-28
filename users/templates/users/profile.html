@@ -14,6 +14,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
+                {% empty %} 
             {% endfor %}
         </div>
     {% endif %}
@@ -25,10 +26,15 @@
     {% else %}
 
     <h1 class="display-4">{{ user.username }}</h1>
+    <form action="{% url 'users:add_friend' user.id %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary btn-sm">Add Friend</button>
+    </form>
     {% endif %}
 
 
     <nav class="nav nav-tabs">
+        <a class="nav-item nav-link" href="{% url 'users:user_profile' user.username %}">Profile</a>
         <a class="nav-item nav-link" href="{% url 'users:badge_list' user.username %}">Badges</a>
         <a class="nav-item nav-link" href="{% url 'users:followers_list' user.username %}">Followers: {{ friends_profiles_followers|length }}</a>
         <a class="nav-item nav-link" href="{% url 'users:following_list' user.username %}">Following: {{ friends_profiles_following|length }}</a>

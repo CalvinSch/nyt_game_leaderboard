@@ -1,0 +1,89 @@
+{% extends 'users/profile.html' %}
+
+{% block title %}Bio{% endblock %}
+
+{% block tab_content %}
+<div class="container">
+    <div class="row">
+        <!-- Bio Section -->
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2>Bio</h2>
+                    <p>{{ bio }}</p>
+                    {% if user.username == request.user.username %}
+                        <a href="{% url 'users:edit_bio' user.username %}" class="btn btn-primary">Edit Bio</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Average Score Section -->
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2>Average Score</h2>
+                    <h4>{{ avg_score }}</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <!-- Recent Activities Section -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h2>Recent Puzzle</h2>
+                    <h6>Date: {{ last_score_object.date }}</h6>
+                    <h6>Rating: {{ last_score_object.score_value }}</h6>
+                    <p>{{ last_score_object.score_details | linebreaksbr }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scores Distribution Section -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h2>Scores Distribution</h2>
+                    <canvas id="scoresChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var ctx = document.getElementById('scoresChart').getContext('2d');
+      var scoresChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: {{ score_groups|safe }},
+          datasets: [{
+            label: 'Number of Scores',
+            data: {{ score_counts|safe }},
+            backgroundColor: 'rgba(0, 191, 255, .8)', // Set background color to blue
+            borderColor: 'rgba(0, 191, 255, 1)', // Set border color to blue
+            borderWidth: 1
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: function(value, index, values) {
+                return Math.floor(value); // Return only the integer part
+              }
+              }
+            }
+          }
+        }
+      });
+    });
+  </script>
+  
+
+{% endblock %}
