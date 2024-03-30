@@ -102,6 +102,21 @@ class ConnectionsScore(models.Model):
         
         return score
 
+    ##this function takes in a puzzle and returns 1 if successful and 0 if not 
+    def is_successful_puzzle(self):
+        print(self.score_details)
+        square_data = [i.strip() for i in self.score_details.strip().split('\n')] #s will be a list ['Connections', 'Puzzle #xxx', {square row 1}, {square row 2}, etc...]
+
+        #a score needs all the right color combos for it to be correct 
+        #this takes all perfect rows and subtracts matching rows 
+        #leftovers should have all elements removed and return 1
+        need_list = ['🟪🟪🟪🟪', '🟦🟦🟦🟦', '🟩🟩🟩🟩', '🟨🟨🟨🟨']
+        leftovers = set(need_list) - set(square_data)
+        if len(leftovers) > 0:
+            return 0
+        else:
+            return 1
+
     
     def __str__(self):
         return f"{self.player_name} - {self.puzzle_number} - Puzzle #{self.puzzle_number}"

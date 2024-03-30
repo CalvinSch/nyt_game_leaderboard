@@ -11,18 +11,15 @@ from django.contrib.auth.forms import UserCreationForm
 ##models 
 from .models import Profile, Friendship
 from django.contrib.auth.models import User
-from django.db.models import Q #querying models 
+from leaderboards.models import ConnectionsScore
+from django.db.models import Q, Avg #querying models and mods
+
+from collections import Counter
+import json
 
 #error handling 
 from django.db import IntegrityError
 
-#views examples from Google SSO tutorial 
-# def home(request):
-#     return render(request, "home.html")
-
-# def logout_view(request):
-#     logout(request)
-#     return redirect("/")
 
 
 # Create your views here.
@@ -32,6 +29,8 @@ def index(request):
     #return render(request, "users/user.html")
     return redirect(reverse("leaderboards:leaderboard"))
     
+
+
 def login_view(request):
     if request.method =='POST':
         username = request.POST['username'] #request object contains info from the form that is submitted 
@@ -48,8 +47,8 @@ def login_view(request):
 
     context = {'login_view': login_view}
     return render(request, "users/login.html")
-    #return redirect(reverse("users:login"))
-    #return HttpResponseRedirect(reverse("users:login"))
+
+
 
 def register_view(request):
     if request.method == 'POST':
@@ -79,6 +78,7 @@ def set_username_view(request):
             return redirect(reverse('users:list_users'))  # Redirect to desired URL after setting username
     return render(request, 'set_username.html')
 
+
 def logout_view(request):
     logout(request)
     return render(request, "users/login.html", {
@@ -86,7 +86,11 @@ def logout_view(request):
     })
 
 
+
+    
+
 #user profile view, renders the profile html page 
+##this view also pulls alot of the important information related to the user object by calling methods of Profile
 def user_profile_view(request, username):
     #Need immediate handler for no users, redirect to registration?
     if username == '':
@@ -96,21 +100,134 @@ def user_profile_view(request, username):
     user_profile = get_object_or_404(Profile, user__username=username)
     user = get_object_or_404(User, username=username)
 
-    # Get the list of friends' profiles from the profile object method called get_friends_profiles_following/followers 
+    # Get the list of friends' profiles from the profile object method called get_friends_profiles_following/followers
+    #also get badges and bio 
     friends_profiles_following = user_profile.get_friends_profiles_following()
     friends_profiles_followers = user_profile.get_friends_profiles_followers()
-
     badges = user_profile.get_badges()
+    bio = user_profile.get_bio()
 
-    return render(request, 'users/profile.html', 
+    ##calculate wanted metrics 
+    user_scores = ConnectionsScore.objects.filter(player_name=username)
+    successful_puzzles = sum([obj.is_successful_puzzle() for obj in user_scores]) ##sums the results of the successful puzzle function
+    total_puzzles = len(user_scores)
+    avg_score_result = user_scores.aggregate(Avg('score_value'))
+    avg_score = round(avg_score_result.get('score_value__avg'))  # This will be None if there are no scores
+    if len(user_scores) > 0:
+        last_score_object = user_scores.order_by('puzzle_number', 'score_value').reverse()[0]
+    else:
+        last_score_object = None
+
+    # Group scores by tens
+    score_groups_nums = [(score.score_value // 10) * 10 for score in user_scores]  
+    # Count occurrences in each group
+    score_counts = Counter(score_groups_nums)  
+    #finding the correct group to join 
+    placeholder_groups = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90]
+    # for all the placeholder groups, if there is a number other than 0, return it 
+    score_counts = [score_counts.get(group, 0) for group in placeholder_groups]
+    #for the x axis 
+    score_groups = ["0-10", "10-20", "20-30", "30-40", "40-50", "50-60", "60-70", "70-80", "80-90", "90-100"]
+
+    # Convert Python lists to JSON for the graph to render
+    score_groups_json = json.dumps(score_groups)
+    score_counts_json = json.dumps(score_counts)
+
+
+
+
+    return render(request, 'users/info.html', 
             {'profile': user_profile, 
             'user': user, 
+            'bio': bio,
+
+            #calculated metrics
+            'avg_score':avg_score,
+            'total_puzzles':total_puzzles,
+            'successful_puzzles':successful_puzzles,
+            'last_score_object':last_score_object,
+
+            #for graph 
+            'score_groups':score_groups_json,
+            'score_counts':score_counts_json,
+            
             'friends_profiles_following': friends_profiles_following,
             'friends_profiles_followers': friends_profiles_followers,
             'badges':badges})
 
 
+##this view listens for POST requests on the edit bio pages and will save the changes once the submit button is pressed 
+def edit_bio_view(request, username):
+
+    user = get_object_or_404(User, username=username)
+    user_profile = get_object_or_404(Profile, user__username=username)
+    # Get the list of friends' profiles from the profile object method called get_friends_profiles_following/followers
+    #also get badges and bio 
+    friends_profiles_following = user_profile.get_friends_profiles_following() #these are important so that the follower count remains consitent 
+    friends_profiles_followers = user_profile.get_friends_profiles_followers()
+    badges = user_profile.get_badges()
+    bio = user_profile.get_bio() ##this is important so that the default is the current bio
+
+    #if a user tries to edit a bio that is not theirs, they will be redirected back to their profile and prompt a threatening message 
+    if request.user.username != username:
+        messages.error(request, 'You think you are clever. You will be banned.')
+        return redirect(reverse('users:user_profile', kwargs = {'username':request.user.username}))
+
+    #handling of the form submission in which the new bio is saved 
+    if request.method == 'POST':
+        bio = request.POST.get('bio', '')
+        profile = request.user.profile
+        profile.bio = bio
+        profile.save()
+        messages.success(request, 'Your bio has been updated.')
+        return redirect(reverse('users:user_profile', kwargs={'username':username}))  # Adjust the redirect as needed
+
+    #render the edit bio page with all information so that the navigation bar still looks clean 
+    return render(request, 'users/edit_bio.html', 
+        {'profile': user_profile, 
+            'user': user, 
+            'bio': bio,
+            'friends_profiles_following': friends_profiles_following,
+            'friends_profiles_followers': friends_profiles_followers,
+            'badges':badges}
+        )
+
+
+# def add_friend_view(request, user_id):
+#     if request.method == "POST":
+#         if request.user.is_authenticated:
+#             user_to_add = get_object_or_404(User, pk=user_id)
+#             if request.user != user_to_add:
+#                 try:
+#                     # Attempt to create the friendship
+#                     Friendship.objects.create(from_user=request.user, to_user=user_to_add)
+
+#                     # Add a success message
+#                     messages.success(request, "Friend successfully added!")
+
+#                 except IntegrityError:
+#                     # Handle the case where the friendship already exists
+#                     messages.error(request, "You are great friends with this person already!")
+#                     return redirect(reverse('users:list_users'))
+
+#             else:
+#                 messages.error(request, "You cannot add yourself as a friend, silly goose.")
+#                 return redirect(reverse('users:list_users'))
+#         else:
+#             messages.error(request, "You must be logged in to add friends.")
+#             return redirect(reverse('users:list_users'))
+#     else:
+#         messages.error(request, "Invalid request.")
+#         return redirect(reverse('users:list_users'))
+
+#     # Redirect back to the same page or another page of your choice
+#     return redirect(reverse('users:user_profile', kwargs={'username': request.user.username}))  # Redirect to an appropriate page
+
+
 def add_friend_view(request, user_id):
+    # Default fallback URL if HTTP_REFERER is not available
+    fallback_url = reverse('users:list_users')
+    
     if request.method == "POST":
         if request.user.is_authenticated:
             user_to_add = get_object_or_404(User, pk=user_id)
@@ -125,24 +242,21 @@ def add_friend_view(request, user_id):
                 except IntegrityError:
                     # Handle the case where the friendship already exists
                     messages.error(request, "You are great friends with this person already!")
-                    return redirect(reverse('users:list_users'))
 
             else:
                 messages.error(request, "You cannot add yourself as a friend, silly goose.")
-                return redirect(reverse('users:list_users'))
         else:
             messages.error(request, "You must be logged in to add friends.")
-            return redirect(reverse('users:list_users'))
     else:
         messages.error(request, "Invalid request.")
-        return redirect(reverse('users:list_users'))
 
-    # Redirect back to the same page or another page of your choice
-    return redirect(reverse('users:user_profile', kwargs={'username': request.user.username}))  # Redirect to an appropriate page
+    # Use the HTTP_REFERER header to redirect back to the previous page, if available
+    return redirect(request.META.get('HTTP_REFERER', fallback_url))
+
 
 
 def list_users_view(request):
-    users = User.objects.all()
+    users = User.objects.all().order_by('username')
     return render(request, 'users/list_users.html', {'users': users})
 
 
@@ -152,7 +266,7 @@ def delete_relationship_view(request, friend_id):
         relationship = get_object_or_404(Friendship, from_user=request.user, to_user_id=friend_id)
         relationship.delete()
         messages.success(request, "Friendship removed successfully.")
-    return redirect(reverse('users:user_profile', kwargs={'username': request.user.username})) 
+    return redirect(reverse('users:following_list', kwargs={'username': request.user.username})) 
 
 
 ##render the following list html page which is an extension of the profile page 

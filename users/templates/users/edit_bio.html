@@ -1,0 +1,16 @@
+{% extends 'users/profile.html' %}  <!-- Adjust the path as needed -->
+
+{% block title %}Edit Bio{% endblock %}
+
+{% block tab_content %}
+    <div class="container mt-5">
+        <h2>Edit Bio</h2>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <textarea id="bio" name="bio" class="form-control" rows="3">{{ bio }}</textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Save Bio</button>
+        </form>
+    </div>
+{% endblock %}
