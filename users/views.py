@@ -86,6 +86,9 @@ def logout_view(request):
     })
 
 
+
+    
+
 #user profile view, renders the profile html page 
 ##this view also pulls alot of the important information related to the user object by calling methods of Profile
 def user_profile_view(request, username):
@@ -106,6 +109,8 @@ def user_profile_view(request, username):
 
     ##calculate wanted metrics 
     user_scores = ConnectionsScore.objects.filter(player_name=username)
+    successful_puzzles = sum([obj.is_successful_puzzle() for obj in user_scores]) ##sums the results of the successful puzzle function
+    total_puzzles = len(user_scores)
     avg_score_result = user_scores.aggregate(Avg('score_value'))
     avg_score = round(avg_score_result.get('score_value__avg'))  # This will be None if there are no scores
     if len(user_scores) > 0:
@@ -129,14 +134,23 @@ def user_profile_view(request, username):
     score_counts_json = json.dumps(score_counts)
 
 
+
+
     return render(request, 'users/info.html', 
             {'profile': user_profile, 
             'user': user, 
             'bio': bio,
+
+            #calculated metrics
             'avg_score':avg_score,
+            'total_puzzles':total_puzzles,
+            'successful_puzzles':successful_puzzles,
+            'last_score_object':last_score_object,
+
+            #for graph 
             'score_groups':score_groups_json,
             'score_counts':score_counts_json,
-            'last_score_object':last_score_object,
+            
             'friends_profiles_following': friends_profiles_following,
             'friends_profiles_followers': friends_profiles_followers,
             'badges':badges})
