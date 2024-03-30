@@ -35,6 +35,9 @@ class Profile(models.Model):
         badges = ['🎖️', '🏅', '🎉', 'More badges coming soon...']
         return badges
 
+    def get_bio(self):
+        return self.bio
+
 
     def __str__(self):
         return self.user.username

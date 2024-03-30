@@ -3,7 +3,7 @@ from django.urls import include, path
 
 
 from users.views import (index, login_view, logout_view, user_profile_view, add_friend_view, list_users_view, delete_relationship_view, register_view,
-followers_list_view, following_list_view, badge_list_view, set_username_view)
+followers_list_view, following_list_view, badge_list_view, set_username_view, edit_bio_view)
 from leaderboards.views import leaderboard_view, submit_score
 from . import views
 
@@ -24,6 +24,9 @@ urlpatterns = [
     #path('leaderboards/', leaderboard_view, name='leaderboard_view'),
     ##individual user profile page 
     path('<str:username>', user_profile_view, name='user_profile'),
+
+    path('edit_bio/<str:username>', edit_bio_view, name='edit_bio'),
+    
     path('badges/<str:username>', badge_list_view, name='badge_list'),
     path('following_list/<str:username>', following_list_view, name='following_list'),
     path('followers_list/<str:username>', followers_list_view, name='followers_list'),
