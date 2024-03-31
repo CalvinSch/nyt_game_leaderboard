@@ -110,7 +110,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'leaderboards',
     'users',
-
+    'django.contrib.sitemap',
     'django.contrib.sites',
     'allauth',
     'allauth.account',
