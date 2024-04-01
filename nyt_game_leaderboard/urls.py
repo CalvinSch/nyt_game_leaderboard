@@ -18,8 +18,9 @@ from django.contrib import admin
 from django.urls import include, path
 from django.conf import settings
 from django.conf.urls.static import static
-from django.contrib.sitemaps import GenericSitemap
+from django.contrib.sitemaps import Sitemap
 from django.contrib.sitemaps.views import sitemap
+from .sitemap import CustomConnectionsScoreSitemap
 
 #Models for sitemapping
 from users.models import Profile
@@ -34,15 +35,16 @@ from leaderboards.models import ConnectionsScore
 # ]
 
 
-#SEO Dictionary of users and scores to help with sitemapping. Need at least a Queryset
-info_dict = {
+#SEO Dictionary of users and scores to help with sitemapping. NEEDS queryset entry
+info_dict_queryset = {
     #If we pass in these dictionaries, search engines can navigate through profiles and scores
-    "profile_queryset": Profile.objects.all(),
-    "score_queryset": ConnectionsScore.objects.all()
+    #"profile_queryset": Profile.objects.all(),
+    "queryset": ConnectionsScore.objects.all(),
+    "date_field": "date",
 }
 
 urlpatterns = [
-    path('', include("leaderboards.urls")), 
+    path('', include("leaderboards.urls"), name='leaderboard'), 
     path('accounts/', include("allauth.urls")),
     path('accounts/', include("allauth.urls")),
     path('admin/', admin.site.urls),
@@ -51,7 +53,7 @@ urlpatterns = [
     path(
         "sitemap.xml",
         sitemap,
-        {"sitemaps": {"leaderboard": GenericSitemap(info_dict, priority=0.6)}},
+        {"sitemaps": {"leaderboard": CustomConnectionsScoreSitemap()}},
         name="django.contrib.sitemaps.views.sitemap",
     ),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
