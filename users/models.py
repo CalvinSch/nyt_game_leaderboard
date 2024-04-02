@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.urls import reverse
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -37,7 +38,10 @@ class Profile(models.Model):
 
     def get_bio(self):
         return self.bio
-
+    
+    def get_absolute_url(self):
+        #Create a url that follows the URLConf in users/urls.py
+        return reverse('user_profile', kwargs={'username': self.user.username})
 
     def __str__(self):
         return self.user.username

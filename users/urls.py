@@ -1,9 +1,13 @@
 from django.urls import path 
 from django.urls import include, path
+from django.contrib.sitemaps import GenericSitemap
+from django.contrib.sitemaps.views import sitemap
+from .sitemap import ProfileListSitemap
 
 
 from users.views import (index, login_view, logout_view, user_profile_view, add_friend_view, list_users_view, delete_relationship_view, register_view,
 followers_list_view, following_list_view, badge_list_view, set_username_view, edit_bio_view)
+from users.models import Profile
 from leaderboards.views import leaderboard_view, submit_score
 from . import views
 
@@ -13,6 +17,10 @@ from . import views
 #     path("logout", views.logout_view)
 # ]
 
+#Define Sitemaps Dict to point to ProfileListSitemap
+sitemaps = {
+    'profiles': ProfileListSitemap,
+}
 
 app_name = 'users'
 urlpatterns = [
@@ -36,5 +44,12 @@ urlpatterns = [
     path('list_users/', list_users_view, name='list_users'),
     path('delete_relationship/<int:friend_id>/', delete_relationship_view, name='delete_relationship'),
     path('accounts/', include('allauth.urls')),
-    path('accounts/', include('allauth.socialaccount.urls'))
+    path('accounts/', include('allauth.socialaccount.urls')),
+    #Sitemap URL Path
+    path(
+        "sitemap.xml",
+        sitemap,
+        {"sitemaps": sitemaps},
+        name='django.contrib.sitemaps.views.sitemap'
+    ),
 ]

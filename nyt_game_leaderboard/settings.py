@@ -111,7 +111,7 @@ INSTALLED_APPS = [
     'leaderboards',
     'users',
     'django.contrib.sitemaps',
-    #'django.contrib.sites',
+    'django.contrib.sites',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
