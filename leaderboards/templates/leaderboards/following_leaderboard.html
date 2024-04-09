@@ -20,7 +20,7 @@
         {% for score in leaderboard_scores %}
             <tr>
                 <th scope="row" style="padding-right: 0rem">{{ forloop.counter }}</th>
-                <td style="max-width: 90px;"><div style="overflow: scroll; width: 100%">{{ score.player_name }}</div></td>
+                <td style="max-width: 90px;"><div style="overflow: scroll; width: 100%"><a href="{% url 'users:user_profile' username=score.player_name %}" style="color: #212529">{{ score.player_name }}</a></div></td>
                 <td>{{ score.score_value }}</td> 
                 <td style="min-width: 120px; max-width: 140px;">{{ score.score_details | linebreaksbr }}</td>
                 <td>{{ score.puzzle_number }}</td>

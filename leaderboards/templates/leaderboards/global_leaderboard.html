@@ -20,7 +20,7 @@
             <tr>
                 <th scope="row" style="padding-right: 0rem">{{ forloop.counter }}</th>
                 {% if score.player_name != '' %}
-                <td style="max-width: 90px;"><div style="overflow: scroll; width: 100%">{{ score.player_name }}</div></td>
+                <td style="max-width: 90px;"><div style="overflow: scroll; width: 100%"><a href="{% url 'users:user_profile' username=score.player_name %}" style="color: #212529">{{ score.player_name }}</a></div></td>
                 {% else %}
                 <td>Guest</td>
                 {% endif %}
