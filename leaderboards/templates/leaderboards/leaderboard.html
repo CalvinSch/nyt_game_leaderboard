@@ -1,7 +1,124 @@
-
 <div class="container mt-3"></div>
 {% extends "users/layout.html" %}
 {% block body %}
+<head>
+    {% load static  %}
+    <!-- <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}"> -->
+</head>
+<!-- <style>
+    .flip-container {
+        perspective: 1000;
+    }
+
+    .flip-container:hover .flipper {
+        transform: rotateY(180deg);
+    }
+
+    .flipper {
+        transition: 1s;
+        transform-style: preserve-3d;
+        position: relative;
+    }
+
+    .flip-container,
+    .front,
+    .back {
+        width: 230px;
+        height: 230px;
+        border-radius: 50%;
+    }
+
+    .front,
+    .back {
+        backface-visibility: visible;
+        position: relative;
+        top: 0;
+        left: 0;
+    }
+
+    .front {
+        z-index: 2;
+    }
+
+    .back {
+        transform: rotateY(180deg);
+    }
+
+</style> -->
+<style>
+    .leaderboard-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: white;
+      padding: 20px;
+    }
+  
+    .leaderboard-items {
+      display: flex;
+      align-items: center;
+    }
+  
+    .flip-container {
+      perspective: 1000;
+      margin-right: 20px;
+    }
+  
+    .flip-container:hover .flipper {
+      transform: rotateY(180deg);
+    }
+  
+    .flipper {
+      transition: 1s;
+      transform-style: preserve-3d;
+      position: relative;
+    }
+  
+    .flip-container,
+    .front,
+    .back {
+      width: 230px;
+      height: 230px;
+      border-radius: 50%;
+    }
+  
+    .front,
+    .back {
+      backface-visibility: visible;
+      position: relative;
+      top: 0;
+      left: 0;
+    }
+  
+    .front {
+      z-index: 3;
+    }
+  
+    .back {
+      transform: rotateY(180deg);
+    }
+  
+    .leaderboard-logo {
+      max-width: 40%;
+      height: auto;
+    }
+  
+    /* Media queries for responsive design */
+    @media (max-width: 768px) {
+      .leaderboard-container {
+        flex-direction: column;
+        align-items: center;
+      }
+  
+      .leaderboard-items {
+        margin-bottom: 20px;
+      }
+  
+      .leaderboard-logo {
+        max-width: 80%;
+      }
+    }
+</style>
 <div class="container mt-3">
 
     {% if messages %}
@@ -19,18 +136,41 @@
     </div>
     {% endif %}
     
-    
-
-
     {% load static %}
-    <div style="position: sticky; top: 42px; overflow-y: scroll; background-color: white; z-index: 10;">
-        <div class="d-flex justify-content-between align-items-center" style="margin-bottom: 20px; background-color: white;">
-            <img src="{% static 'img/leaderboard_logo.png' %}" alt="Leaderboard Logo" style="width: 40%;" class="img-fluid">
-            <!-- <button id="emojiToggle" class="btn btn-outline-secondary" onclick="toggleEmoji('{% if request.user.is_authenticated %}{{ request.user.username }}{% endif %}')"> -->
-            <button id="emojiToggle" class="btn btn-outline-secondary" onclick="toggleEmoji()">
-                <span id="emoji">🌐 Global</span>
-            </button>
+    <!-- <div class="d-flex justify-content-between align-items-center" style="background-color: white;">
+        <div class="flip-container">
+            <div class="flipper">
+                <div class="front">
+                    <img src="{% static 'img/leaderboard_square.png' %}" alt="Leaderboard Square" style="width: 100%; height: auto;" class="img-fluid">
+                </div>
+                <div class="back">
+                    <img src="{% static 'img/leaderboard_square.png' %}" alt="Leaderboard Square" style="width: 100%; height: auto;" class="img-fluid">
+                </div>
+            </div>
         </div>
+        <img src="{% static 'img/leaderboard_text.png' %}" alt="Leaderboard Logo" style="width: 40%;" class="img-fluid">
+        <button id="emojiToggle" class="btn btn-outline-secondary">
+            <span id="emoji">🌐 Global</span>
+        </button>
+    </div> -->
+    <div class="leaderboard-container">
+        <div class="leaderboard-items">
+          <div class="flip-container">
+            <div class="flipper">
+              <div class="front">
+                <img src="{% static 'img/leaderboard_square.png' %}" alt="Leaderboard Square" class="img-fluid">
+              </div>
+              <div class="back">
+                <img src="{% static 'img/leaderboard_square.png' %}" alt="Leaderboard Square" class="img-fluid">
+              </div>
+            </div>
+          </div>
+          <img src="{% static 'img/leaderboard_text.png' %}" alt="Leaderboard Logo" class="leaderboard-logo">
+        </div>
+        <button id="emojiToggle" class="btn btn-outline-secondary">
+          <span id="emoji">🌐 Global</span>
+        </button>
+    </div>
 
         <!-- built in css for buttons -->
         <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
