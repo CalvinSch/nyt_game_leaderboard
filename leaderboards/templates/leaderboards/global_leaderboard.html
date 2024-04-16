@@ -24,7 +24,11 @@
                 {% else %}
                 <td>Guest</td>
                 {% endif %}
+                {% if score.score_value == 100 %}
+                <td style="font-size: x-large;">💯</td>
+                {% else %}
                 <td>{{ score.score_value }}</td> 
+                {% endif %}
                 <td style="min-width: 120px; max-width: 140px;">{{ score.score_details | linebreaksbr }}</td>
                 <td>{{ score.puzzle_number }}</td>
                 <td>{{ score.date|date:"N j, Y P" }}</td>
