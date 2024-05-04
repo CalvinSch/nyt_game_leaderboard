@@ -1,9 +1,15 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Leaderboard</title>
+
+    <!-- With updated STATICFILE_DIRS, we can now reference static files like this. BE SURE TO python manage.py collectstatic -->
+    <link rel="icon" href="{% static '/img/favicon.ico' %}"> <!--got rid of style tag to see if it would load -->
+
     <style>
         .header {
             background-color: #ffffff;
@@ -56,9 +62,8 @@
         }
 
     </style>
-    {% load static %}
-    <!-- With updated STATICFILE_DIRS, we can now reference static files like this. BE SURE TO python manage.py collectstatic -->
-    <link rel="icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon">
+
+
 
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
     <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"> -->
@@ -66,10 +71,6 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-
-    <!-- for making graph on user page -->
-    <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
-
 
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-YB36YJLB60"></script>
