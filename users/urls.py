@@ -2,7 +2,7 @@ from django.urls import path
 from django.urls import include, path
 
 
-from users.views import (index, login_view, logout_view, user_profile_view, add_friend_view, list_users_view, delete_relationship_view, register_view,
+from users.views import (index, login_view, logout_view, user_profile_view, UserProfileAPIView, add_friend_view, list_users_view, delete_relationship_view, register_view,
 followers_list_view, following_list_view, badge_list_view, set_username_view, edit_bio_view)
 from leaderboards.views import leaderboard_view, submit_score
 from . import views
@@ -24,7 +24,6 @@ urlpatterns = [
     #path('leaderboards/', leaderboard_view, name='leaderboard_view'),
     ##individual user profile page 
     path('<str:username>', user_profile_view, name='user_profile'),
-
     path('edit_bio/<str:username>', edit_bio_view, name='edit_bio'),
     
     path('badges/<str:username>', badge_list_view, name='badge_list'),
@@ -36,5 +35,10 @@ urlpatterns = [
     path('list_users/', list_users_view, name='list_users'),
     path('delete_relationship/<int:friend_id>/', delete_relationship_view, name='delete_relationship'),
     path('accounts/', include('allauth.urls')),
-    path('accounts/', include('allauth.socialaccount.urls'))
+    path('accounts/', include('allauth.socialaccount.urls')),
+
+
+    ##apis
+    path('api/<str:username>', UserProfileAPIView.as_view(), name='user_profile_api'), ##this is the url created to get the api response
+
 ]
