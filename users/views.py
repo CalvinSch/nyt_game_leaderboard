@@ -16,9 +16,14 @@ from django.db.models import Q, Avg #querying models and mods
 
 from collections import Counter
 import json
+from django.core.serializers import serialize
 
 #error handling 
 from django.db import IntegrityError
+
+#for API - used pip install djangorestframework
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
 
 
@@ -29,7 +34,6 @@ def index(request):
     #return render(request, "users/user.html")
     return redirect(reverse("leaderboards:leaderboard"))
     
-
 
 def login_view(request):
     if request.method =='POST':
@@ -47,7 +51,6 @@ def login_view(request):
 
     context = {'login_view': login_view}
     return render(request, "users/login.html")
-
 
 
 def register_view(request):
@@ -87,7 +90,6 @@ def logout_view(request):
 
 
 
-    
 
 #user profile view, renders the profile html page 
 ##this view also pulls alot of the important information related to the user object by calling methods of Profile
@@ -111,8 +113,12 @@ def user_profile_view(request, username):
     user_scores = ConnectionsScore.objects.filter(player_name=username)
     successful_puzzles = sum([obj.is_successful_puzzle() for obj in user_scores]) ##sums the results of the successful puzzle function
     total_puzzles = len(user_scores)
+
     avg_score_result = user_scores.aggregate(Avg('score_value'))
-    avg_score = round(avg_score_result.get('score_value__avg'))  # This will be None if there are no scores
+    avg_score_value = avg_score_result.get('score_value__avg') # Fetch the value, which might be None
+    avg_score = round(avg_score_value if avg_score_value is not None else 0) # If avg_score_value is None, use default value 0; otherwise, use the fetched value
+    
+    #avg_score = round(avg_score_result.get('score_value__avg', 0))  # This will be None if there are no scores
     if len(user_scores) > 0:
         last_score_object = user_scores.order_by('puzzle_number', 'score_value').reverse()[0]
     else:
@@ -156,6 +162,73 @@ def user_profile_view(request, username):
             'badges':badges})
 
 
+class UserProfileAPIView(APIView):
+    ##using the same view, but returning the api response instead of the html page
+    def get(self, request, username):
+        #Need immediate handler for no users, redirect to registration?
+        if username == '':
+            return redirect(reverse('users:register_view'))
+
+        #obtain the instance of the profile and user based on the username on the page 
+        user_profile = get_object_or_404(Profile, user__username=username)
+        user = get_object_or_404(User, username=username)
+
+        # Get the list of friends' profiles from the profile object method called get_friends_profiles_following/followers
+        #also get badges and bio 
+        friends_profiles_following = user_profile.get_friends_profiles_following()
+        friends_profiles_followers = user_profile.get_friends_profiles_followers()
+        badges = user_profile.get_badges()
+        bio = user_profile.get_bio()
+
+        ##calculate wanted metrics 
+        user_scores = ConnectionsScore.objects.filter(player_name=username)
+        successful_puzzles = sum([obj.is_successful_puzzle() for obj in user_scores]) ##sums the results of the successful puzzle function
+        total_puzzles = len(user_scores)
+        avg_score_result = user_scores.aggregate(Avg('score_value'))
+        avg_score = round(avg_score_result.get('score_value__avg'))  # This will be None if there are no scores
+        if len(user_scores) > 0:
+            last_score_object = user_scores.order_by('puzzle_number', 'score_value').reverse()[0]
+        else:
+            last_score_object = None
+
+        last_score_serialized = model_to_dict(last_score_object) #convert object to json serilazable 
+
+        # Group scores by tens
+        score_groups_nums = [(score.score_value // 10) * 10 for score in user_scores]  
+        # Count occurrences in each group
+        score_counts = Counter(score_groups_nums)  
+        #finding the correct group to join 
+        placeholder_groups = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90]
+        # for all the placeholder groups, if there is a number other than 0, return it 
+        score_counts = [score_counts.get(group, 0) for group in placeholder_groups]
+        #for the x axis 
+        score_groups = ["0-10", "10-20", "20-30", "30-40", "40-50", "50-60", "60-70", "70-80", "80-90", "90-100"]
+
+        # Convert Python lists to JSON for the graph to render
+        score_groups_json = json.dumps(score_groups)
+        score_counts_json = json.dumps(score_counts)
+
+        print(last_score_object)
+        
+
+        return Response({#'profile': user_profile, 
+                #'user': user, 
+                'bio': bio,
+                'avg_score':avg_score,
+                'total_puzzles':total_puzzles,
+                'successful_puzzles':successful_puzzles,
+                'last_score_object':last_score_serialized,
+                #'score_groups':model_to_dict(score_groups_json),
+                #'score_counts':model_to_dict(score_counts_json),
+                #'friends_profiles_following': model_to_dict(friends_profiles_following),
+                #'friends_profiles_followers': model_to_dict(friends_profiles_followers),
+                'badges':badges})
+
+#serializer to convert complex data into json format 
+def model_to_dict(instance):
+    # Serialize the instance to JSON string and then convert to a dict
+    return json.loads(serialize('json', [instance]))[0]['fields']
+
 ##this view listens for POST requests on the edit bio pages and will save the changes once the submit button is pressed 
 def edit_bio_view(request, username):
 
@@ -193,36 +266,6 @@ def edit_bio_view(request, username):
         )
 
 
-# def add_friend_view(request, user_id):
-#     if request.method == "POST":
-#         if request.user.is_authenticated:
-#             user_to_add = get_object_or_404(User, pk=user_id)
-#             if request.user != user_to_add:
-#                 try:
-#                     # Attempt to create the friendship
-#                     Friendship.objects.create(from_user=request.user, to_user=user_to_add)
-
-#                     # Add a success message
-#                     messages.success(request, "Friend successfully added!")
-
-#                 except IntegrityError:
-#                     # Handle the case where the friendship already exists
-#                     messages.error(request, "You are great friends with this person already!")
-#                     return redirect(reverse('users:list_users'))
-
-#             else:
-#                 messages.error(request, "You cannot add yourself as a friend, silly goose.")
-#                 return redirect(reverse('users:list_users'))
-#         else:
-#             messages.error(request, "You must be logged in to add friends.")
-#             return redirect(reverse('users:list_users'))
-#     else:
-#         messages.error(request, "Invalid request.")
-#         return redirect(reverse('users:list_users'))
-
-#     # Redirect back to the same page or another page of your choice
-#     return redirect(reverse('users:user_profile', kwargs={'username': request.user.username}))  # Redirect to an appropriate page
-
 
 def add_friend_view(request, user_id):
     # Default fallback URL if HTTP_REFERER is not available
@@ -252,7 +295,6 @@ def add_friend_view(request, user_id):
 
     # Use the HTTP_REFERER header to redirect back to the previous page, if available
     return redirect(request.META.get('HTTP_REFERER', fallback_url))
-
 
 
 def list_users_view(request):

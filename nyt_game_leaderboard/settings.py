@@ -24,6 +24,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'static/img'),
+    os.path.join(BASE_DIR, 'static/img/'),
 ]
 
 # Quick-start development settings - unsuitable for production
@@ -93,7 +95,7 @@ ALLOWED_HOSTS = ['*'] #TODO: CHANGE FOR SECURITY ON DEPLOY
 CSRF_TRUSTED_ORIGINS = ['https://localhost:8000']
 
 ##From Django-Google login tutorial 
-SITE_ID=3 #THIS FUCKING WORKED!?
+SITE_ID=2 #THIS FUCKING WORKED!?
 
 #so hopefully the intermediary page doesnt show up 
 SOCIALACCOUNT_LOGIN_ON_GET=True
@@ -115,7 +117,9 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'allauth.socialaccount.providers.google'
+    'allauth.socialaccount.providers.google',
+
+    'rest_framework'
 ]
 
 #based on scopes from Google cloud console
@@ -158,6 +162,20 @@ TEMPLATES = [
         },
     },
 ]
+
+
+##for default templates for any api responses
+#this allows the react framework to interact freely with django 
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny'
+    ],
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    )
+}
+
 
 WSGI_APPLICATION = 'nyt_game_leaderboard.wsgi.application'
 
