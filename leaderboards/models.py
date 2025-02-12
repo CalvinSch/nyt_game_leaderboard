@@ -31,6 +31,16 @@ class ConnectionsScore(models.Model):
     🟩🟩🟩🟩
     🟪🟪🟪🟪
     🟦🟦🟦🟦
+
+    === Sports Mode ===
+    Connections: Sports Edition
+    Puzzle #139
+    🔵🔵🔵🔵
+    🟣🟣🟡🟣
+    🟡🟡🟡🟡
+    🟣🟣🟣🟣
+    🟢🟢🟢🟢 
+
     """
     raw_score_details = models.TextField()
     game = 'Test Game'
